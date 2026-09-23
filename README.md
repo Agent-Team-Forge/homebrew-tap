@@ -14,6 +14,11 @@ support x64 (Ubuntu 22.04+) and ARM64 (Ubuntu 24.04+). On Windows, run these com
 inside WSL2, not PowerShell. Keep team files in the Linux home directory, not
 `/mnt/c`, to preserve private file permissions.
 
+Linux/WSL2 also requires the distribution's OpenSSL 3 runtime: `libssl3` on
+Ubuntu 22.04 or `libssl3t64` on Ubuntu 24.04. Install the matching package with
+Ubuntu's package manager if missing. The CLI uses system OpenSSL to match the
+system glibc; Homebrew supplies ICU.
+
 Before creating a team, install/start Docker with Compose, configure your personal
 Zulip credentials at `~/.zuliprc`, and edit `my-team/agent-team.json` with your
 repository/settings. On Windows, enable Docker Desktop's WSL integration. Then:
@@ -45,5 +50,7 @@ manifest, and SHA-256 checksums. The source repository is private.
 For each new published release, copy its checksum-verified `agent-team.rb` asset
 to `Formula/agent-team.rb`, then commit and push. CI checks installation from the
 public release URLs on native Apple Silicon, Linux x64, and Linux ARM64 runners.
-It tests initialization and private file permissions, reinstall, and uninstall.
+It tests initialization and private file permissions, SHA-256 through a legacy
+deployment lock, cancelled destruction without changing team files, reinstall,
+and uninstall.
 It does not provision live Zulip resources or a Docker Desktop deployment.
