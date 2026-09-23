@@ -1,0 +1,41 @@
+name: Test public Homebrew installation
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  install:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [macos-15, ubuntu-22.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: Homebrew/actions/setup-homebrew@848c272c7bfe984a197bd4d16383f4c106ec61e6
+        with:
+          stable: true
+      - name: Install and test the published formula
+        shell: pwsh
+        env:
+          HOMEBREW_NO_AUTO_UPDATE: '1'
+          HOMEBREW_NO_INSTALL_CLEANUP: '1'
+        run: |
+          $ErrorActionPreference = 'Stop'
+          function Invoke-Brew([string[]] $Arguments) {
+            brew @Arguments
+            if ($LASTEXITCODE -ne 0) { throw "brew $Arguments failed." }
+          }
+          Invoke-Brew @('install', 'agent-team-forge/tap/agent-team')
+          try {
+            Invoke-Brew @('test', 'agent-team-forge/tap/agent-team')
+            Invoke-Brew @('reinstall', 'agent-team-forge/tap/agent-team')
+            Invoke-Brew @('test', 'agent-team-forge/tap/agent-team')
+            agent-team version
+            if ($LASTEXITCODE -ne 0) { throw 'Installed CLI is unavailable on PATH.' }
+          }
+          finally { Invoke-Brew @('uninstall', 'agent-team-forge/tap/agent-team') }
