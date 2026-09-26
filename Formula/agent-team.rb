@@ -1,25 +1,25 @@
 class AgentTeam < Formula
   desc "Create and manage a team of AI agents"
   homepage "https://github.com/Agent-Team-Forge/homebrew-tap"
-  version "0.2.13"
+  version "0.2.22"
   license :cannot_represent
 
   on_macos do
     depends_on arch: :arm64
     depends_on macos: :sequoia
-    url "https://github.com/stick109/agent-team-releases/releases/download/v0.2.13/agentteam-osx-arm64.tar.gz"
-    sha256 "99d1a643d89e637baa4984e094a17fd31857932bb202e6f2dd56d1d7cadc19fa"
+    url "https://github.com/stick109/agent-team-releases/releases/download/v0.2.22/agentteam-osx-arm64.tar.gz"
+    sha256 "82349f6c059b0ed637f1000e357f95dea2ee42f9debe129e3980fccb79c17979"
   end
 
   on_linux do
     depends_on "icu4c@78"
     on_intel do
-      url "https://github.com/stick109/agent-team-releases/releases/download/v0.2.13/agentteam-linux-x64.tar.gz"
-      sha256 "23abf90cd29613a9b92be201329c36504246a07bcf3cea167c940f34b71d13f1"
+      url "https://github.com/stick109/agent-team-releases/releases/download/v0.2.22/agentteam-linux-x64.tar.gz"
+      sha256 "cd36cd70ce8eaeac003388a3d6ea8bcee99ef51513a8bec77575759e48b28edc"
     end
     on_arm do
-      url "https://github.com/stick109/agent-team-releases/releases/download/v0.2.13/agentteam-linux-arm64.tar.gz"
-      sha256 "cfdbd261a2e43238db9e417ef12a971ac69f106d399977496fe1458f148e5470"
+      url "https://github.com/stick109/agent-team-releases/releases/download/v0.2.22/agentteam-linux-arm64.tar.gz"
+      sha256 "eca1f1ab6a84e725a2ff337cf8e4312418b4bbfe60fa623b7fc1ecb665962ee3"
     end
   end
 
@@ -68,9 +68,9 @@ class AgentTeam < Formula
     lock_contents = JSON.generate({ "ProjectName" => project })
     release_lock.write lock_contents
     configuration = (team/"agent-team.json").read
-    output = pipe_output("#{(bin/"agent-team").to_s.shellescape} destroy #{team.to_s.shellescape}", "no\n", 0)
+    output = pipe_output("#{(bin/"agent-team").to_s.shellescape} delete #{team.to_s.shellescape}", "no\n", 0)
     assert_match "Type 'yes' and press Enter to continue:", output
-    assert_match "Destruction cancelled; no resources were changed.", output
+    assert_match "Deletion cancelled; no resources were changed.", output
     assert_equal lock_contents, release_lock.read
     assert_equal configuration, (team/"agent-team.json").read
   end
