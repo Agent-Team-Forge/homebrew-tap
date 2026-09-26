@@ -1,25 +1,25 @@
 class AgentTeam < Formula
   desc "Create and manage a team of AI agents"
   homepage "https://github.com/Agent-Team-Forge/homebrew-tap"
-  version "0.2.30"
+  version "0.2.31"
   license :cannot_represent
 
   on_macos do
     depends_on arch: :arm64
     depends_on macos: :sequoia
-    url "https://github.com/stick109/agent-team-releases/releases/download/v0.2.30/agentteam-osx-arm64.tar.gz"
-    sha256 "1b61213ec0a7954683f8f5ffcb29a66c2184b48bc91f2f925afc10ed5ec9a3df"
+    url "https://github.com/stick109/agent-team-releases/releases/download/v0.2.31/agentteam-osx-arm64.tar.gz"
+    sha256 "504e31b1475eb4bf3be25a5690dd7948ba7986e75229384ababb136fbf680c0a"
   end
 
   on_linux do
     depends_on "icu4c@78"
     on_intel do
-      url "https://github.com/stick109/agent-team-releases/releases/download/v0.2.30/agentteam-linux-x64.tar.gz"
-      sha256 "f997b151232ff2895348934c85168d7faeed87b9bc61ce1009c8eda176762fc5"
+      url "https://github.com/stick109/agent-team-releases/releases/download/v0.2.31/agentteam-linux-x64.tar.gz"
+      sha256 "837cce7320f186a9a1e1e38175282bba8eec1b930e37f1b3e0ae572e097b72bd"
     end
     on_arm do
-      url "https://github.com/stick109/agent-team-releases/releases/download/v0.2.30/agentteam-linux-arm64.tar.gz"
-      sha256 "7873dc5f925c7b2cbe096abb17385c58c0240617beea632b4620a6962430848d"
+      url "https://github.com/stick109/agent-team-releases/releases/download/v0.2.31/agentteam-linux-arm64.tar.gz"
+      sha256 "14bb38fb43ca680f416a1a74a3b4db0ee171177caad5fd498abb5ad67f2a700a"
     end
   end
 
