@@ -1,25 +1,25 @@
 class AgentTeam < Formula
   desc "Create and manage a team of AI agents"
   homepage "https://github.com/Agent-Team-Forge/homebrew-tap"
-  version "0.2.56"
+  version "0.3.6"
   license :cannot_represent
 
   on_macos do
     depends_on arch: :arm64
     depends_on macos: :sequoia
-    url "https://github.com/stick109/agent-team-releases/releases/download/v0.2.56/agentteam-osx-arm64.tar.gz"
-    sha256 "2751508f0a7df857941ac327a54b4b0b8d345fddd26c4c9ae5c3c7d630d9445a"
+    url "https://github.com/stick109/agent-team-releases/releases/download/v0.3.6/agentteam-osx-arm64.tar.gz"
+    sha256 "5960c489692a0bb09861da2e0f4a0da21ae478ba2384c4df1006ddd4e6debeba"
   end
 
   on_linux do
     depends_on "icu4c@78"
     on_intel do
-      url "https://github.com/stick109/agent-team-releases/releases/download/v0.2.56/agentteam-linux-x64.tar.gz"
-      sha256 "4bdb045904706c358101803bbc1a5ae924d2516c5095c3065ee4b41b22b2222b"
+      url "https://github.com/stick109/agent-team-releases/releases/download/v0.3.6/agentteam-linux-x64.tar.gz"
+      sha256 "1e93ffe5f14827d6a27ab306af9200d13510acf54f3f204684af0d1799225d76"
     end
     on_arm do
-      url "https://github.com/stick109/agent-team-releases/releases/download/v0.2.56/agentteam-linux-arm64.tar.gz"
-      sha256 "d0b16c5bf67d60f6edff866a099a216dcc0d57dcdef848c1657551c0263d31a4"
+      url "https://github.com/stick109/agent-team-releases/releases/download/v0.3.6/agentteam-linux-arm64.tar.gz"
+      sha256 "153b46933acdfda14471a698cb78d0813a9004d53354843213ba71afe447963e"
     end
   end
 
@@ -55,8 +55,10 @@ class AgentTeam < Formula
     assert_path_exists team/"agent-team.json"
     require "json"
     settings = JSON.parse((team/"agent-team.json").read)
-    assert_equal 2, settings.fetch("version")
+    assert_equal 3, settings.fetch("version")
     assert_equal "example/product", settings.fetch("repository").fetch("slug")
+    assert_equal "labels", settings.fetch("issues").fetch("routing")
+    assert_equal "automatic", settings.fetch("supervisor").fetch("merge_policy")
     assert_equal 0700, (team/".agent-team/secrets").stat.mode & 0777
     %w[architect developer tester].each do |role|
       assert_path_exists team/"agents/#{role}/AGENTS.md"
