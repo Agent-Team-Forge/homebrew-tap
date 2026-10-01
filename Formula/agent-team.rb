@@ -1,25 +1,25 @@
 class AgentTeam < Formula
   desc "Create and manage a team of AI agents"
   homepage "https://github.com/Agent-Team-Forge/homebrew-tap"
-  version "0.2.46"
+  version "0.2.55"
   license :cannot_represent
 
   on_macos do
     depends_on arch: :arm64
     depends_on macos: :sequoia
-    url "https://github.com/stick109/agent-team-releases/releases/download/v0.2.46/agentteam-osx-arm64.tar.gz"
-    sha256 "1ebb8626cb5d4267ab261c5171a1d2b4b505774d58d8842d03f8b94ffe855568"
+    url "https://github.com/stick109/agent-team-releases/releases/download/v0.2.55/agentteam-osx-arm64.tar.gz"
+    sha256 "18895307ceafbda4cbe7b79062507552f69c85e6b3fec23490cc121fc424bb4c"
   end
 
   on_linux do
     depends_on "icu4c@78"
     on_intel do
-      url "https://github.com/stick109/agent-team-releases/releases/download/v0.2.46/agentteam-linux-x64.tar.gz"
-      sha256 "abbb258c2d8c013336c4eccb5c4352b5a766d28704c8d5bf5af15128aff78eb9"
+      url "https://github.com/stick109/agent-team-releases/releases/download/v0.2.55/agentteam-linux-x64.tar.gz"
+      sha256 "8f0d3968b4526ea8b9b747a50f29079cb1fbb0e86efa61301379e92997392535"
     end
     on_arm do
-      url "https://github.com/stick109/agent-team-releases/releases/download/v0.2.46/agentteam-linux-arm64.tar.gz"
-      sha256 "9c32280ac800a46e8c4c05410b49ca800ba3b4a4662b0b8ca43d180b1ec62938"
+      url "https://github.com/stick109/agent-team-releases/releases/download/v0.2.55/agentteam-linux-arm64.tar.gz"
+      sha256 "4bc542f690bd78e91a6fa373b903a50674e3a501731d3b666aaa28b14f74e4c7"
     end
   end
 
@@ -42,7 +42,7 @@ class AgentTeam < Formula
       On Linux, install the distribution's OpenSSL 3 runtime (Ubuntu 22.04: libssl3;
       Ubuntu 24.04: libssl3t64). The CLI uses system OpenSSL, not Homebrew OpenSSL.
       Keep team files in the WSL Linux filesystem to preserve secret permissions.
-      Start with: agent-team init my-team
+      Start with: agent-team init my-team https://github.com/owner/repository.git
       Edit my-team/agent-team.json, then run: agent-team create my-team
       Upgrading the CLI does not upgrade an existing team's deployment.
     EOS
@@ -51,8 +51,12 @@ class AgentTeam < Formula
   test do
     assert_equal version.to_s, shell_output("#{bin}/agent-team version").strip
     team = testpath/"parent with spaces"/"team"
-    system bin/"agent-team", "init", team
+    system bin/"agent-team", "init", team, "https://github.com/example/product.git"
     assert_path_exists team/"agent-team.json"
+    require "json"
+    settings = JSON.parse((team/"agent-team.json").read)
+    assert_equal 2, settings.fetch("version")
+    assert_equal "example/product", settings.fetch("repository").fetch("slug")
     assert_equal 0700, (team/".agent-team/secrets").stat.mode & 0777
     %w[architect developer tester].each do |role|
       assert_path_exists team/"agents/#{role}/AGENTS.md"
@@ -62,7 +66,6 @@ class AgentTeam < Formula
     # A legacy lock forces SHA-256 inside the packaged CLI before confirmation.
     # `version` and `init` alone do not exercise .NET's OpenSSL loader.
     require "digest"
-    require "json"
     project = "agent-team-team-#{Digest::SHA256.hexdigest(team.to_s)[0, 10]}"
     release_lock = team/".agent-team-release-lock.json"
     lock_contents = JSON.generate({ "ProjectName" => project })
